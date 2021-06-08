@@ -1,0 +1,129 @@
+/usr/stud/fangyi/active_learning/object_classification/models/resnet.py:88: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  out = F.softmax(out)
+1.1.0
+DBAL
+Entropy
+cifar100
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 1/10 || Label set size 1000: Test acc 5.37
+execute time：188.100543 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 2/10 || Label set size 2000: Test acc 8.12
+execute time：279.817997 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 3/10 || Label set size 3000: Test acc 9.75
+execute time：373.313590 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 4/10 || Label set size 4000: Test acc 12.0
+execute time：468.081360 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 5/10 || Label set size 5000: Test acc 13.3
+execute time：562.849496 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 6/10 || Label set size 6000: Test acc 14.79
+execute time：650.800773 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 7/10 || Label set size 7000: Test acc 15.18
+execute time：742.747216 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 8/10 || Label set size 8000: Test acc 15.32
+execute time：835.309934 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 9/10 || Label set size 9000: Test acc 16.15
+execute time：929.830258 s
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 10/10 || Label set size 10000: Test acc 16.1
+execute time：1022.745004 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 1/10 || Label set size 1000: Test acc 5.01
+execute time：186.769936 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 2/10 || Label set size 2000: Test acc 6.53
+execute time：280.678973 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 3/10 || Label set size 3000: Test acc 7.24
+execute time：375.216747 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 4/10 || Label set size 4000: Test acc 9.17
+execute time：470.486672 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 5/10 || Label set size 5000: Test acc 10.13
+execute time：565.359301 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 6/10 || Label set size 6000: Test acc 14.13
+execute time：655.236636 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 7/10 || Label set size 7000: Test acc 15.51
+execute time：748.692296 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 8/10 || Label set size 8000: Test acc 15.67
+execute time：842.129781 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 9/10 || Label set size 9000: Test acc 16.91
+execute time：936.372252 s
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 10/10 || Label set size 10000: Test acc 16.89
+execute time：1028.667499 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 1/10 || Label set size 1000: Test acc 3.77
+execute time：187.208978 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 2/10 || Label set size 2000: Test acc 5.69
+execute time：280.574615 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 3/10 || Label set size 3000: Test acc 7.1
+execute time：374.783135 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 4/10 || Label set size 4000: Test acc 9.07
+execute time：470.856681 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 5/10 || Label set size 5000: Test acc 10.91
+execute time：566.542730 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 6/10 || Label set size 6000: Test acc 13.71
+execute time：654.917116 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 7/10 || Label set size 7000: Test acc 15.26
+execute time：747.951618 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 8/10 || Label set size 8000: Test acc 16.76
+execute time：841.293896 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 9/10 || Label set size 9000: Test acc 17.97
+execute time：935.700575 s
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 10/10 || Label set size 10000: Test acc 17.86
+execute time：1029.436149 s
