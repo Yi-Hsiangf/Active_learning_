@@ -1,0 +1,164 @@
+1.1.0
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 1/10 || Label set size 1000: Test acc 13.27
+execute time：133.879971 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 2/10 || Label set size 2000: Test acc 18.25
+execute time：273.458650 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 3/10 || Label set size 3000: Test acc 23.16
+execute time：406.884259 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 4/10 || Label set size 4000: Test acc 28.06
+execute time：537.038273 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 5/10 || Label set size 5000: Test acc 33.17
+execute time：669.706354 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 6/10 || Label set size 6000: Test acc 39.3
+execute time：789.336564 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 7/10 || Label set size 7000: Test acc 43.85
+execute time：925.221550 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 8/10 || Label set size 8000: Test acc 47.43
+execute time：1057.488159 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 9/10 || Label set size 9000: Test acc 50.92
+execute time：1189.428522 s
+>> Train a Model.
+>> Finished.
+Trial 1/4 || Cycle 10/10 || Label set size 10000: Test acc 53.64
+execute time：1323.136134 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 1/10 || Label set size 1000: Test acc 13.07
+execute time：139.265032 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 2/10 || Label set size 2000: Test acc 17.65
+execute time：275.281013 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 3/10 || Label set size 3000: Test acc 22.67
+execute time：410.926989 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 4/10 || Label set size 4000: Test acc 27.92
+execute time：541.175564 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 5/10 || Label set size 5000: Test acc 35.18
+execute time：673.851055 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 6/10 || Label set size 6000: Test acc 41.28
+execute time：799.315551 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 7/10 || Label set size 7000: Test acc 45.68
+execute time：935.287190 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 8/10 || Label set size 8000: Test acc 48.28
+execute time：1064.780333 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 9/10 || Label set size 9000: Test acc 50.33
+execute time：1197.470357 s
+>> Train a Model.
+>> Finished.
+Trial 2/4 || Cycle 10/10 || Label set size 10000: Test acc 52.75
+execute time：1331.481412 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 1/10 || Label set size 1000: Test acc 13.3
+execute time：139.618217 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 2/10 || Label set size 2000: Test acc 19.18
+execute time：277.569458 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 3/10 || Label set size 3000: Test acc 24.57
+execute time：413.844750 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 4/10 || Label set size 4000: Test acc 30.41
+execute time：546.747622 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 5/10 || Label set size 5000: Test acc 36.02
+execute time：680.415131 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 6/10 || Label set size 6000: Test acc 41.85
+execute time：806.924573 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 7/10 || Label set size 7000: Test acc 44.97
+execute time：942.302598 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 8/10 || Label set size 8000: Test acc 48.82
+execute time：1075.626935 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 9/10 || Label set size 9000: Test acc 52.22
+execute time：1209.822837 s
+>> Train a Model.
+>> Finished.
+Trial 3/4 || Cycle 10/10 || Label set size 10000: Test acc 54.41
+execute time：1350.870136 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 1/10 || Label set size 1000: Test acc 13.09
+execute time：140.921247 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 2/10 || Label set size 2000: Test acc 18.67
+execute time：278.428473 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 3/10 || Label set size 3000: Test acc 23.9
+execute time：414.166648 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 4/10 || Label set size 4000: Test acc 28.98
+execute time：548.029337 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 5/10 || Label set size 5000: Test acc 35.43
+execute time：683.472376 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 6/10 || Label set size 6000: Test acc 41.21
+execute time：810.866112 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 7/10 || Label set size 7000: Test acc 45.61
+execute time：942.413655 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 8/10 || Label set size 8000: Test acc 48.42
+execute time：1068.313993 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 9/10 || Label set size 9000: Test acc 52.46
+execute time：1199.548549 s
+>> Train a Model.
+>> Finished.
+Trial 4/4 || Cycle 10/10 || Label set size 10000: Test acc 55.3
+execute time：1331.814457 s
