@@ -1,0 +1,346 @@
+1.1.0
+ENS
+BALD
+cifar10
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+num_classes: 10
+num_classes: 10
+num_classes: 10
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 1/10 || Label set size 1000: Model 1 Test acc 52.9
+Trial 1/3 || Cycle 1/10 || Label set size 1000: Model 2 Test acc 50.12
+Trial 1/3 || Cycle 1/10 || Label set size 1000: Model 3 Test acc 54.06
+Trial 1/3 || Cycle 1/10 || Label set size 1000: Model avg Test acc 52.35999999999999
+execute time：272.797118 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 2/10 || Label set size 2000: Model 1 Test acc 64.81
+Trial 1/3 || Cycle 2/10 || Label set size 2000: Model 2 Test acc 64.14
+Trial 1/3 || Cycle 2/10 || Label set size 2000: Model 3 Test acc 66.27
+Trial 1/3 || Cycle 2/10 || Label set size 2000: Model avg Test acc 65.07333333333332
+execute time：535.205832 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 3/10 || Label set size 3000: Model 1 Test acc 73.57
+Trial 1/3 || Cycle 3/10 || Label set size 3000: Model 2 Test acc 72.99
+Trial 1/3 || Cycle 3/10 || Label set size 3000: Model 3 Test acc 74.09
+Trial 1/3 || Cycle 3/10 || Label set size 3000: Model avg Test acc 73.55
+execute time：801.701781 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 4/10 || Label set size 4000: Model 1 Test acc 79.76
+Trial 1/3 || Cycle 4/10 || Label set size 4000: Model 2 Test acc 79.2
+Trial 1/3 || Cycle 4/10 || Label set size 4000: Model 3 Test acc 81.22
+Trial 1/3 || Cycle 4/10 || Label set size 4000: Model avg Test acc 80.06
+execute time：1062.009979 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 5/10 || Label set size 5000: Model 1 Test acc 82.57
+Trial 1/3 || Cycle 5/10 || Label set size 5000: Model 2 Test acc 83.32
+Trial 1/3 || Cycle 5/10 || Label set size 5000: Model 3 Test acc 82.92
+Trial 1/3 || Cycle 5/10 || Label set size 5000: Model avg Test acc 82.93666666666667
+execute time：1326.254632 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 6/10 || Label set size 6000: Model 1 Test acc 86.58
+Trial 1/3 || Cycle 6/10 || Label set size 6000: Model 2 Test acc 86.37
+Trial 1/3 || Cycle 6/10 || Label set size 6000: Model 3 Test acc 86.51
+Trial 1/3 || Cycle 6/10 || Label set size 6000: Model avg Test acc 86.48666666666666
+execute time：1557.285209 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 7/10 || Label set size 7000: Model 1 Test acc 88.39
+Trial 1/3 || Cycle 7/10 || Label set size 7000: Model 2 Test acc 87.65
+Trial 1/3 || Cycle 7/10 || Label set size 7000: Model 3 Test acc 88.29
+Trial 1/3 || Cycle 7/10 || Label set size 7000: Model avg Test acc 88.11000000000001
+execute time：1813.509899 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 8/10 || Label set size 8000: Model 1 Test acc 89.33
+Trial 1/3 || Cycle 8/10 || Label set size 8000: Model 2 Test acc 88.88
+Trial 1/3 || Cycle 8/10 || Label set size 8000: Model 3 Test acc 89.02
+Trial 1/3 || Cycle 8/10 || Label set size 8000: Model avg Test acc 89.07666666666665
+execute time：2073.682481 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 9/10 || Label set size 9000: Model 1 Test acc 90.43
+Trial 1/3 || Cycle 9/10 || Label set size 9000: Model 2 Test acc 89.85
+Trial 1/3 || Cycle 9/10 || Label set size 9000: Model 3 Test acc 90.28
+Trial 1/3 || Cycle 9/10 || Label set size 9000: Model avg Test acc 90.18666666666667
+execute time：2336.075676 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 1/3 || Cycle 10/10 || Label set size 10000: Model 1 Test acc 90.87
+Trial 1/3 || Cycle 10/10 || Label set size 10000: Model 2 Test acc 90.85
+Trial 1/3 || Cycle 10/10 || Label set size 10000: Model 3 Test acc 90.78
+Trial 1/3 || Cycle 10/10 || Label set size 10000: Model avg Test acc 90.83333333333333
+execute time：2595.611698 s
+num_classes: 10
+num_classes: 10
+num_classes: 10
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 1/10 || Label set size 1000: Model 1 Test acc 49.09
+Trial 2/3 || Cycle 1/10 || Label set size 1000: Model 2 Test acc 53.01
+Trial 2/3 || Cycle 1/10 || Label set size 1000: Model 3 Test acc 52.8
+Trial 2/3 || Cycle 1/10 || Label set size 1000: Model avg Test acc 51.633333333333326
+execute time：273.513352 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 2/10 || Label set size 2000: Model 1 Test acc 61.31
+Trial 2/3 || Cycle 2/10 || Label set size 2000: Model 2 Test acc 64.81
+Trial 2/3 || Cycle 2/10 || Label set size 2000: Model 3 Test acc 64.18
+Trial 2/3 || Cycle 2/10 || Label set size 2000: Model avg Test acc 63.43333333333334
+execute time：535.329106 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 3/10 || Label set size 3000: Model 1 Test acc 70.67
+Trial 2/3 || Cycle 3/10 || Label set size 3000: Model 2 Test acc 73.8
+Trial 2/3 || Cycle 3/10 || Label set size 3000: Model 3 Test acc 72.41
+Trial 2/3 || Cycle 3/10 || Label set size 3000: Model avg Test acc 72.29333333333334
+execute time：798.228525 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 4/10 || Label set size 4000: Model 1 Test acc 77.67
+Trial 2/3 || Cycle 4/10 || Label set size 4000: Model 2 Test acc 79.41
+Trial 2/3 || Cycle 4/10 || Label set size 4000: Model 3 Test acc 79.15
+Trial 2/3 || Cycle 4/10 || Label set size 4000: Model avg Test acc 78.74333333333333
+execute time：1060.979423 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 5/10 || Label set size 5000: Model 1 Test acc 82.43
+Trial 2/3 || Cycle 5/10 || Label set size 5000: Model 2 Test acc 82.59
+Trial 2/3 || Cycle 5/10 || Label set size 5000: Model 3 Test acc 82.85
+Trial 2/3 || Cycle 5/10 || Label set size 5000: Model avg Test acc 82.62333333333333
+execute time：1322.592197 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 6/10 || Label set size 6000: Model 1 Test acc 85.64
+Trial 2/3 || Cycle 6/10 || Label set size 6000: Model 2 Test acc 86.2
+Trial 2/3 || Cycle 6/10 || Label set size 6000: Model 3 Test acc 85.75
+Trial 2/3 || Cycle 6/10 || Label set size 6000: Model avg Test acc 85.86333333333334
+execute time：1553.919738 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 7/10 || Label set size 7000: Model 1 Test acc 87.58
+Trial 2/3 || Cycle 7/10 || Label set size 7000: Model 2 Test acc 87.22
+Trial 2/3 || Cycle 7/10 || Label set size 7000: Model 3 Test acc 87.08
+Trial 2/3 || Cycle 7/10 || Label set size 7000: Model avg Test acc 87.29333333333334
+execute time：1813.721853 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 8/10 || Label set size 8000: Model 1 Test acc 88.99
+Trial 2/3 || Cycle 8/10 || Label set size 8000: Model 2 Test acc 88.41
+Trial 2/3 || Cycle 8/10 || Label set size 8000: Model 3 Test acc 89.01
+Trial 2/3 || Cycle 8/10 || Label set size 8000: Model avg Test acc 88.80333333333333
+execute time：2073.955285 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 9/10 || Label set size 9000: Model 1 Test acc 90.03
+Trial 2/3 || Cycle 9/10 || Label set size 9000: Model 2 Test acc 90.36
+Trial 2/3 || Cycle 9/10 || Label set size 9000: Model 3 Test acc 90.07
+Trial 2/3 || Cycle 9/10 || Label set size 9000: Model avg Test acc 90.15333333333332
+execute time：2336.293065 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 2/3 || Cycle 10/10 || Label set size 10000: Model 1 Test acc 90.56
+Trial 2/3 || Cycle 10/10 || Label set size 10000: Model 2 Test acc 90.65
+Trial 2/3 || Cycle 10/10 || Label set size 10000: Model 3 Test acc 90.79
+Trial 2/3 || Cycle 10/10 || Label set size 10000: Model avg Test acc 90.66666666666667
+execute time：2595.444888 s
+num_classes: 10
+num_classes: 10
+num_classes: 10
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 1/10 || Label set size 1000: Model 1 Test acc 51.49
+Trial 3/3 || Cycle 1/10 || Label set size 1000: Model 2 Test acc 49.95
+Trial 3/3 || Cycle 1/10 || Label set size 1000: Model 3 Test acc 48.17
+Trial 3/3 || Cycle 1/10 || Label set size 1000: Model avg Test acc 49.870000000000005
+execute time：272.937581 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 2/10 || Label set size 2000: Model 1 Test acc 64.32
+Trial 3/3 || Cycle 2/10 || Label set size 2000: Model 2 Test acc 62.03
+Trial 3/3 || Cycle 2/10 || Label set size 2000: Model 3 Test acc 62.03
+Trial 3/3 || Cycle 2/10 || Label set size 2000: Model avg Test acc 62.79333333333333
+execute time：535.324965 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 3/10 || Label set size 3000: Model 1 Test acc 73.03
+Trial 3/3 || Cycle 3/10 || Label set size 3000: Model 2 Test acc 70.15
+Trial 3/3 || Cycle 3/10 || Label set size 3000: Model 3 Test acc 71.37
+Trial 3/3 || Cycle 3/10 || Label set size 3000: Model avg Test acc 71.51666666666667
+execute time：799.501665 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 4/10 || Label set size 4000: Model 1 Test acc 79.5
+Trial 3/3 || Cycle 4/10 || Label set size 4000: Model 2 Test acc 76.91
+Trial 3/3 || Cycle 4/10 || Label set size 4000: Model 3 Test acc 77.73
+Trial 3/3 || Cycle 4/10 || Label set size 4000: Model avg Test acc 78.04666666666667
+execute time：1059.287497 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 5/10 || Label set size 5000: Model 1 Test acc 83.26
+Trial 3/3 || Cycle 5/10 || Label set size 5000: Model 2 Test acc 81.42
+Trial 3/3 || Cycle 5/10 || Label set size 5000: Model 3 Test acc 82.13
+Trial 3/3 || Cycle 5/10 || Label set size 5000: Model avg Test acc 82.27
+execute time：1321.933079 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 6/10 || Label set size 6000: Model 1 Test acc 86.1
+Trial 3/3 || Cycle 6/10 || Label set size 6000: Model 2 Test acc 84.79
+Trial 3/3 || Cycle 6/10 || Label set size 6000: Model 3 Test acc 85.08
+Trial 3/3 || Cycle 6/10 || Label set size 6000: Model avg Test acc 85.32333333333332
+execute time：1551.862038 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 7/10 || Label set size 7000: Model 1 Test acc 87.09
+Trial 3/3 || Cycle 7/10 || Label set size 7000: Model 2 Test acc 86.86
+Trial 3/3 || Cycle 7/10 || Label set size 7000: Model 3 Test acc 86.44
+Trial 3/3 || Cycle 7/10 || Label set size 7000: Model avg Test acc 86.79666666666667
+execute time：1812.644709 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 8/10 || Label set size 8000: Model 1 Test acc 88.72
+Trial 3/3 || Cycle 8/10 || Label set size 8000: Model 2 Test acc 87.94
+Trial 3/3 || Cycle 8/10 || Label set size 8000: Model 3 Test acc 88.28
+Trial 3/3 || Cycle 8/10 || Label set size 8000: Model avg Test acc 88.31333333333333
+execute time：2076.011413 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 9/10 || Label set size 9000: Model 1 Test acc 89.6
+Trial 3/3 || Cycle 9/10 || Label set size 9000: Model 2 Test acc 89.16
+Trial 3/3 || Cycle 9/10 || Label set size 9000: Model 3 Test acc 89.8
+Trial 3/3 || Cycle 9/10 || Label set size 9000: Model avg Test acc 89.52
+execute time：2354.689235 s
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+>> Train a Model.
+>> Finished.
+Trial 3/3 || Cycle 10/10 || Label set size 10000: Model 1 Test acc 90.22
+Trial 3/3 || Cycle 10/10 || Label set size 10000: Model 2 Test acc 90.14
+Trial 3/3 || Cycle 10/10 || Label set size 10000: Model 3 Test acc 90.3
+Trial 3/3 || Cycle 10/10 || Label set size 10000: Model avg Test acc 90.22000000000001
+execute time：2595.358127 s

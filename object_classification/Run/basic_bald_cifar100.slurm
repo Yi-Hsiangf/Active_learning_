@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:1,VRAM:12G
 #SBATCH --cpus-per-task=3
 #SBATCH --mem=24G
-#SBATCH --time=72:00:00
+#SBATCH --time=20:00:00
 #SBATCH --output=Basic_result/BALD_cifar100-%j
 #SBATCH --exclude=node2
 

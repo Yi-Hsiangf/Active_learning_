@@ -1,130 +1,0 @@
-0it [00:00, ?it/s]  0%|          | 0/169001437 [00:00<?, ?it/s]  0%|          | 8192/169001437 [00:00<36:44, 76672.57it/s]  0%|          | 40960/169001437 [00:00<13:27, 209328.86it/s]  0%|          | 90112/169001437 [00:00<08:47, 320286.96it/s]  0%|          | 155648/169001437 [00:00<06:32, 429908.87it/s]  0%|          | 204800/169001437 [00:00<06:25, 437995.73it/s]  0%|          | 352256/169001437 [00:01<03:45, 748490.76it/s]  0%|          | 630784/169001437 [00:01<02:05, 1340351.58it/s]  1%|          | 1187840/169001437 [00:01<01:06, 2540521.95it/s]  1%|▏         | 2285568/169001437 [00:01<00:33, 4906715.08it/s]  2%|▏         | 3891200/169001437 [00:01<00:20, 7949751.16it/s]  3%|▎         | 5595136/169001437 [00:01<00:15, 10271789.97it/s]  4%|▍         | 7299072/169001437 [00:01<00:13, 11937610.55it/s]  5%|▌         | 9134080/169001437 [00:01<00:11, 13422587.14it/s]  7%|▋         | 11100160/169001437 [00:01<00:10, 14782412.32it/s]  8%|▊         | 13131776/169001437 [00:02<00:09, 15974100.82it/s]  9%|▉         | 15245312/169001437 [00:02<00:09, 17002375.07it/s] 10%|█         | 17522688/169001437 [00:02<00:08, 18166454.51it/s] 12%|█▏        | 19931136/169001437 [00:02<00:07, 19086142.18it/s] 13%|█▎        | 22405120/169001437 [00:02<00:07, 20441325.95it/s] 15%|█▍        | 25075712/169001437 [00:02<00:06, 21662590.43it/s] 16%|█▋        | 27844608/169001437 [00:02<00:06, 22777735.95it/s] 18%|█▊        | 30662656/169001437 [00:02<00:05, 23704759.35it/s] 20%|█▉        | 33611776/169001437 [00:02<00:05, 24710943.51it/s] 22%|██▏       | 36708352/169001437 [00:02<00:05, 25736107.76it/s] 24%|██▎       | 39837696/169001437 [00:03<00:04, 26708084.11it/s] 25%|██▌       | 42950656/169001437 [00:03<00:04, 27263859.51it/s] 27%|██▋       | 46063616/169001437 [00:03<00:04, 27658180.05it/s] 29%|██▉       | 49192960/169001437 [00:03<00:04, 27972390.42it/s] 31%|███       | 52289536/169001437 [00:03<00:04, 28107082.73it/s] 33%|███▎      | 55238656/169001437 [00:03<00:04, 26565478.88it/s] 35%|███▍      | 58368000/169001437 [00:03<00:04, 27072562.30it/s] 36%|███▋      | 61497344/169001437 [00:03<00:03, 27660287.43it/s] 38%|███▊      | 64610304/169001437 [00:03<00:03, 27931473.91it/s] 40%|████      | 67674112/169001437 [00:04<00:03, 28679054.32it/s] 42%|████▏     | 70787072/169001437 [00:04<00:03, 28665350.47it/s] 44%|████▎     | 73900032/169001437 [00:04<00:03, 28629086.92it/s] 46%|████▌     | 76980224/169001437 [00:04<00:03, 28513002.90it/s] 47%|████▋     | 80093184/169001437 [00:04<00:03, 28533377.33it/s] 49%|████▉     | 83222528/169001437 [00:04<00:02, 28595294.58it/s] 51%|█████     | 86302720/169001437 [00:04<00:02, 29209606.40it/s] 53%|█████▎    | 89235456/169001437 [00:04<00:02, 28501025.00it/s] 54%|█████▍    | 92094464/169001437 [00:04<00:02, 28138529.87it/s] 56%|█████▌    | 94912512/169001437 [00:05<00:02, 27944076.42it/s] 58%|█████▊    | 97714176/169001437 [00:05<00:02, 27193318.80it/s] 59%|█████▉    | 100442112/169001437 [00:05<00:02, 26517690.32it/s] 61%|██████    | 103358464/169001437 [00:05<00:02, 27022648.27it/s] 63%|██████▎   | 106340352/169001437 [00:05<00:02, 27822268.65it/s] 65%|██████▍   | 109133824/169001437 [00:05<00:02, 27003251.18it/s] 66%|██████▌   | 111878144/169001437 [00:05<00:02, 26740582.31it/s] 68%|██████▊   | 114991104/169001437 [00:05<00:01, 27269260.63it/s] 70%|██████▉   | 118038528/169001437 [00:05<00:01, 28159549.33it/s] 72%|███████▏  | 120938496/169001437 [00:05<00:01, 28224405.48it/s] 73%|███████▎  | 123772928/169001437 [00:06<00:01, 28020853.56it/s] 75%|███████▍  | 126582784/169001437 [00:06<00:01, 27302146.83it/s] 77%|███████▋  | 129318912/169001437 [00:06<00:01, 27095505.22it/s] 78%|███████▊  | 132227072/169001437 [00:06<00:01, 27263008.31it/s] 80%|████████  | 135307264/169001437 [00:06<00:01, 27549509.85it/s] 82%|████████▏ | 138387456/169001437 [00:06<00:01, 27678287.58it/s] 84%|████████▎ | 141467648/169001437 [00:06<00:00, 27840237.62it/s] 86%|████████▌ | 144580608/169001437 [00:06<00:00, 28049577.38it/s] 87%|████████▋ | 147660800/169001437 [00:06<00:00, 28117012.85it/s] 89%|████████▉ | 150708224/169001437 [00:07<00:00, 28783340.84it/s] 91%|█████████ | 153591808/169001437 [00:07<00:00, 27259784.38it/s] 93%|█████████▎| 156655616/169001437 [00:07<00:00, 27544120.96it/s] 95%|█████████▍| 159735808/169001437 [00:07<00:00, 27745566.74it/s] 96%|█████████▋| 162832384/169001437 [00:07<00:00, 27957694.41it/s] 98%|█████████▊| 165961728/169001437 [00:07<00:00, 28171889.60it/s]/usr/stud/fangyi/active_learning/object_classification/models/resnet.py:88: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
-  out = F.softmax(out)
-169009152it [00:19, 28171889.60it/s]                               169009152it [2:49:19, 16636.25it/s] 
-1.1.0
-Simple
-Entropy
-cifar100
-Downloading https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz to ../cifar100/cifar-100-python.tar.gz
-Files already downloaded and verified
-Files already downloaded and verified
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 1/10 || Label set size 1000: Test acc 6.41
-execute time：95.875895 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 2/10 || Label set size 2000: Test acc 8.86
-execute time：187.357055 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 3/10 || Label set size 3000: Test acc 10.67
-execute time：278.825562 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 4/10 || Label set size 4000: Test acc 12.28
-execute time：371.228236 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 5/10 || Label set size 5000: Test acc 13.56
-execute time：466.040038 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 6/10 || Label set size 6000: Test acc 15.02
-execute time：551.402180 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 7/10 || Label set size 7000: Test acc 15.95
-execute time：643.003572 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 8/10 || Label set size 8000: Test acc 16.84
-execute time：734.221599 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 9/10 || Label set size 9000: Test acc 17.35
-execute time：826.701572 s
->> Train a Model.
->> Finished.
-Trial 1/3 || Cycle 10/10 || Label set size 10000: Test acc 17.36
-execute time：919.409801 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 1/10 || Label set size 1000: Test acc 6.07
-execute time：95.960957 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 2/10 || Label set size 2000: Test acc 7.26
-execute time：187.920188 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 3/10 || Label set size 3000: Test acc 8.42
-execute time：280.355582 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 4/10 || Label set size 4000: Test acc 11.03
-execute time：373.339715 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 5/10 || Label set size 5000: Test acc 12.27
-execute time：465.964649 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 6/10 || Label set size 6000: Test acc 14.74
-execute time：551.449756 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 7/10 || Label set size 7000: Test acc 15.95
-execute time：641.002918 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 8/10 || Label set size 8000: Test acc 15.86
-execute time：732.196599 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 9/10 || Label set size 9000: Test acc 16.01
-execute time：824.726609 s
->> Train a Model.
->> Finished.
-Trial 2/3 || Cycle 10/10 || Label set size 10000: Test acc 16.77
-execute time：916.601921 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 1/10 || Label set size 1000: Test acc 4.89
-execute time：95.939179 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 2/10 || Label set size 2000: Test acc 6.88
-execute time：187.115162 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 3/10 || Label set size 3000: Test acc 7.66
-execute time：279.748529 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 4/10 || Label set size 4000: Test acc 8.81
-execute time：372.986194 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 5/10 || Label set size 5000: Test acc 10.67
-execute time：465.191269 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 6/10 || Label set size 6000: Test acc 12.57
-execute time：551.702852 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 7/10 || Label set size 7000: Test acc 13.7
-execute time：642.996031 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 8/10 || Label set size 8000: Test acc 15.56
-execute time：732.665209 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 9/10 || Label set size 9000: Test acc 15.87
-execute time：824.246452 s
->> Train a Model.
->> Finished.
-Trial 3/3 || Cycle 10/10 || Label set size 10000: Test acc 17.31
-execute time：916.345143 s

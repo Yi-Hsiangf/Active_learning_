@@ -55,7 +55,7 @@ class BasicBlock_with_dropout(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, num_classes):
         super(ResNet, self).__init__()
         self.in_planes = 64
 
@@ -85,14 +85,15 @@ class ResNet(nn.Module):
         out = F.avg_pool2d(out4, 4)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
-        out = F.softmax(out)
+        #out = F.softmax(out)
         return out
 
 
-def ResNet18(num_classes = 10):
+def ResNet18(num_classes):
+    print("num_classes:", num_classes)
     return ResNet(BasicBlock, [2,2,2,2], num_classes)
 
-def ResNet18_with_dropout(num_classes = 10):
+def ResNet18_with_dropout(num_classes):
     return ResNet(BasicBlock_with_dropout, [2,2,2,2], num_classes)
 
 def ResNet34():
