@@ -431,6 +431,8 @@ def test_net(
     output_dir = get_output_dir('ssd300_120000', set_type)
     det_file = os.path.join(output_dir, 'detections.pkl')
 
+
+    #num_images = 1
     for i in range(num_images):
         im, gt, h, w = dataset.pull_item(i)
 
@@ -493,7 +495,7 @@ if __name__ == '__main__':
         net = build_ssd('test', 300, num_classes)  # initialize SSD
         net.load_weights(weight_path)
         net.eval()
-        print('Finished loading model!')
+        print("Finished loading cycyle " + str(cycle) + " Random model!")
         # load data
         dataset = VOCDetection(
             args.voc_root, [('2007', set_type)], BaseTransform(300, dataset_mean),
@@ -521,7 +523,7 @@ if __name__ == '__main__':
         net = build_ssd('test', 300, num_classes)  # initialize SSD
         net.load_weights(weight_path)
         net.eval()
-        print('Finished loading model!')
+        print("Finished loading cycle" + str(cycle) + "  LLAL model!")
         # load data
         dataset = VOCDetection(
             args.voc_root, [('2007', set_type)], BaseTransform(300, dataset_mean),
@@ -551,7 +553,7 @@ if __name__ == '__main__':
         net = build_ssd('test', 300, num_classes)  # initialize SSD
         net.load_weights(weight_path)
         net.eval()
-        print('Finished loading model!')
+        print("Finished loading cycle " + str(cycle) + " Entropy model!")
         # load data
         dataset = VOCDetection(
             args.voc_root, [('2007', set_type)], BaseTransform(300, dataset_mean),

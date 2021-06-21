@@ -21,9 +21,10 @@ import argparse
 import tqdm
 
 sys.path.append(os.path.abspath('../../active_learning'))
-from active_learning import ActiveLearning
 from active_loss import LossPredictionLoss
 from active_learning_utils import *
+from active_learning import ActiveLearning
+
 
 
 def str2bool(v):
@@ -295,8 +296,7 @@ def train():
         )
         
 
-        ep = 1
-        for epoch in range(ep):
+        for epoch in range(300):
             if epoch == 240:
                 adjust_learning_rate(optimizer)
             for iteration, (images, targets) in enumerate(data_loader):

@@ -145,12 +145,20 @@ class SSD(nn.Module):
             weight_file = torch.load(base_file, map_location=lambda storage, loc: storage)
             new_wf = {}
             for key in weight_file.keys():
+                #print("key: ", key)
                 if key.split('.')[0]=='module':
-                    new_wf[key[7:]] = weight_file[key]
+                    #print("key[7:] :", key[7:])
+                    if key[7:17] == "base_model":
+                        new_wf[key[18:]] = weight_file[key]
+                    elif key[7:9] == "fc" or key[7:11] == "loss":
+                        pass
+                    else:   
+                        new_wf[key[7:]] = weight_file[key] 
                 else:
                     new_wf[key] = weight_file[key]
             self.load_state_dict(new_wf)
-            print('Finished!')
+
+            
         else:
             print('Sorry only .pth and .pkl files supported.')
 
