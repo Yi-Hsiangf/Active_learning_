@@ -101,8 +101,8 @@ def get_entropy_uncertainty(net, active_cycle, lr,  rand_state, unlabeled_idx, d
     net.load_weights(cycle_model)
 
 
-    #selected_size = min(subset_factor * count, len(unlabeled_idx)-1)
-    selected_size = 100
+    selected_size = min(subset_factor * count, len(unlabeled_idx)-1)
+    #selected_size = 100
     #cycle_subs_idx = rand_state.choice(
     #    unlabeled_idx,
     #    min(subset_factor * count, len(unlabeled_idx)-1),
