@@ -115,26 +115,13 @@ def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, ep
 
 #
 
-def get_uncertainty(models, unlabeled_loader):
-    models.eval()
-    predictions = torch.tensor([]).cuda()
-    with torch.no_grad():
-        for (inputs, labels) in unlabeled_loader:
-            inputs = inputs.cuda()
-            batch_predictions = torch.zeros((BATCH, num_classes)).cuda()     
-            batch_predictions = models(inputs) # 128 10
-
-            predictions = torch.cat((predictions, batch_predictions + 1e-10), 0) # 10000 10                    
-            
-    uncertainty = entropy(predictions.cpu().data.numpy(), base=num_classes, axis=1)
-    return uncertainty
 
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--func', type=str, default='Entropy', help='Select Acquisition Function')
     parser.add_argument('--dataset', type=str, default='cifar10', help='Select dataset')
-    parser.add_argument('--method', type=str, default='Simple', help='Select method: ENS, DBAL, Simple, Basic')
+    parser.add_argument('--method', type=str, default='Simple', help='Select method: ENS, DBAL, Simple, Basic, Coreset')
 
     args = parser.parse_args()
     return args
@@ -263,7 +250,16 @@ if __name__ == '__main__':
             if args.func == "Random" and args.method == "Simple":
                 labeled_set += list(torch.tensor(subset)[-ADDENDUM:].numpy())
                 unlabeled_set = list(torch.tensor(subset)[:-ADDENDUM].numpy()) + unlabeled_set[SUBSET:]
-                
+           
+            elif args.method == "Coreset":
+                print("Coreset")
+                labeled_loader = dataloaders['train']
+                new_indices = Coreset(models, labeled_loader, unlabeled_loader, num_classes, ADDENDUM)
+                labeled_set += new_indices
+
+                non_choosen_set = [idx for idx in subset if idx not in new_indices]
+                unlabeled_set = non_choosen_set + unlabeled_set[SUBSET:] 
+            
             else:
                 # Measure uncertainty of each data points in the subset
                 if args.method == "Simple":

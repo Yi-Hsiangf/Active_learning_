@@ -127,4 +127,61 @@ def ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, Acquisition_
             temp = temp - Mode / float(dropout_iter)
             num_uncertainty = torch.from_numpy(temp.T)
             uncertainty = torch.squeeze(num_uncertainty)
-    return uncertainty 
+    return uncertainty
+
+
+from scipy.spatial import distance_matrix
+
+def Coreset(models, labeled_loader, unlabeled_loader, num_classes, amount):
+    models.eval()
+    unlabeled_predictions = torch.tensor([]).cuda()
+    labeled_predictions = torch.tensor([]).cuda()
+    with torch.no_grad():
+        for (inputs, labels) in unlabeled_loader:
+            inputs = inputs.cuda()
+            batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
+            batch_predictions = models(inputs) # 128 10
+            batch_predictions = F.softmax(batch_predictions, dim=1)
+            unlabeled_predictions = torch.cat((unlabeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
+
+        for (inputs, labels) in labeled_loader:
+            inputs = inputs.cuda()
+            batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
+            batch_predictions = models(inputs) # 128 10
+            batch_predictions = F.softmax(batch_predictions, dim=1)
+            labeled_predictions = torch.cat((labeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
+        
+        new_indices = greedy_k_center(labeled_predictions, unlabeled_predictions, amount) 
+        # return a list
+    return new_indices
+
+def greedy_k_center(labeled, unlabeled, amount):
+
+        greedy_indices = []
+
+        # get the minimum distances between the labeled and unlabeled examples (iteratively, to avoid memory issues):
+        labeled = labeled.cpu().data.numpy()
+        unlabeled = unlabeled.cpu().data.numpy()
+        min_dist = np.min(distance_matrix(labeled[0, :].reshape((1, labeled.shape[1])), unlabeled), axis=0)
+        min_dist = min_dist.reshape((1, min_dist.shape[0]))
+        for j in range(1, labeled.shape[0], 100):
+            if j + 100 < labeled.shape[0]:
+                dist = distance_matrix(labeled[j:j+100, :], unlabeled)
+            else:
+                dist = distance_matrix(labeled[j:, :], unlabeled)
+            min_dist = np.vstack((min_dist, np.min(dist, axis=0).reshape((1, min_dist.shape[1]))))
+            min_dist = np.min(min_dist, axis=0)
+            min_dist = min_dist.reshape((1, min_dist.shape[0]))
+
+        # iteratively insert the farthest index and recalculate the minimum distances:
+        farthest = np.argmax(min_dist)
+        greedy_indices.append(farthest)
+        for i in range(amount-1):
+            dist = distance_matrix(unlabeled[greedy_indices[-1], :].reshape((1,unlabeled.shape[1])), unlabeled)
+            min_dist = np.vstack((min_dist, dist.reshape((1, min_dist.shape[1]))))
+            min_dist = np.min(min_dist, axis=0)
+            min_dist = min_dist.reshape((1, min_dist.shape[0]))
+            farthest = np.argmax(min_dist)
+            greedy_indices.append(farthest)
+
+        return greedy_indices 
