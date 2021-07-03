@@ -140,16 +140,16 @@ def Coreset(models, labeled_loader, unlabeled_loader, num_classes, amount):
         for (inputs, labels) in unlabeled_loader:
             inputs = inputs.cuda()
             batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
-            batch_predictions = models(inputs) # 128 10
-            batch_predictions = F.softmax(batch_predictions, dim=1)
-            unlabeled_predictions = torch.cat((unlabeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
+            representation, batch_predictions = models(inputs) # 128 10
+            unlabeled_predictions = torch.cat((unlabeled_predictions, representation + 1e-10), 0) # 10000 10
+            #unlabeled_predictions = torch.cat((unlabeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
 
         for (inputs, labels) in labeled_loader:
             inputs = inputs.cuda()
             batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
-            batch_predictions = models(inputs) # 128 10
-            batch_predictions = F.softmax(batch_predictions, dim=1)
-            labeled_predictions = torch.cat((labeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
+            representation, batch_predictions = models(inputs) # 128 10
+            labeled_predictions = torch.cat((labeled_predictions, representation + 1e-10), 0) # 10000 10
+            #labeled_predictions = torch.cat((labeled_predictions, batch_predictions + 1e-10), 0) 
         
         new_indices = greedy_k_center(labeled_predictions, unlabeled_predictions, amount) 
         # return a list
