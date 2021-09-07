@@ -18,7 +18,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as T
 import torchvision.models as models
 from torchvision.datasets import CIFAR100, CIFAR10
-
+from caltech import Caltech101, Caltech256
 # argument
 import argparse
 from scipy.stats import entropy
@@ -28,7 +28,7 @@ import models.resnet as resnet
 from config import *
 from acquistion_function import *
 from sampler import SubsetSequentialSampler
-
+import helper
 # Seed
 random.seed(314)
 
@@ -40,7 +40,7 @@ print(torch.__version__)
 iters = 0
 
 #
-def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, plot_data=None):
+def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, method):
     models.train()
     global iters
 
@@ -52,7 +52,11 @@ def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, p
 
         optimizers.zero_grad()
 
-        scores = models(inputs)
+        if method == "Coreset":
+            representation, scores = models(inputs)
+        else:
+            scores = models(inputs)
+        
         target_loss = criterion(scores, labels)
        
 
@@ -63,7 +67,7 @@ def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, p
 
 
 #
-def test(models, dataloaders, mode='val'):
+def test(models, dataloaders, mode='val', method='Entropy'):
     assert mode == 'val' or mode == 'test'
     models.eval()
 
@@ -75,7 +79,12 @@ def test(models, dataloaders, mode='val'):
             inputs = inputs.cuda()
             labels = labels.cuda()
 
-            scores = models(inputs)
+
+            if method == "Coreset":
+                representation, scores = models(inputs)
+            else:
+                scores = models(inputs)
+            
             _, preds = torch.max(scores.data, 1)
             total += labels.size(0)
             correct += (preds == labels).sum().item()
@@ -83,13 +92,17 @@ def test(models, dataloaders, mode='val'):
     return 100 * correct / total
 
 #
-def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, epoch_loss, datasets):
+def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, epoch_loss, datasets, method):
     print('>> Train a Model.')
     best_acc = 0.
     if datasets == 'cifar10':
         p = './cifar10'
     elif datasets == 'cifar100':
         p = './cifar100'
+    elif datasets == 'Caltech101':
+        p = './Caltech101'
+    elif datasets == 'Caltech256':
+        p = './Caltech256'
     checkpoint_dir = os.path.join(p, 'train', 'weights')
     if not os.path.exists(checkpoint_dir):
         os.makedirs(checkpoint_dir)
@@ -98,11 +111,11 @@ def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, ep
         schedulers.step()
 
 
-        train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss)
+        train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, method)
 
         # Save a checkpoint
         if False and epoch % 5 == 4:
-            acc = test(models, dataloaders, 'test')
+            acc = test(models, dataloaders, 'test', method)
             if best_acc < acc:
                 best_acc = acc
                 torch.save({
@@ -160,6 +173,45 @@ if __name__ == '__main__':
         unlabeled_dataset   = CIFAR100('../cifar100', train=True, download=True, transform=test_transform)
         test_dataset  = CIFAR100('../cifar100', train=False, download=True, transform=test_transform)
         num_classes = 100
+    elif args.dataset == 'Caltech101':
+
+        num_classes = 101
+        caltech_dataset = Caltech101 ('../caltech101',  target_type="category" ,download=True, transform=train_transform)
+        
+
+        test_dataset, train_dataset = helper.balanced_random_ratio_split(caltech_dataset, 0.3, 0)
+        unlabeled_dataset = train_dataset
+
+        print("train_dataset size : ", len(train_dataset))
+        print("test_dataset size : ", len(test_dataset))
+        
+        NUM_TRAIN = 6117 # N
+        BATCH     = 128 # B
+        #SUBSET    = 128 # M
+        SUBSET    = 6016 # M
+        ADDENDUM  = 1000 # K
+        TRIALS = 3
+        CYCLES = 6
+
+    elif args.dataset == 'Caltech256':
+
+        num_classes = 256
+        caltech_dataset = Caltech256 ('../caltech256',download=True, transform=train_transform)
+        
+
+        test_dataset, train_dataset = helper.balanced_random_ratio_split(caltech_dataset, 0.3, 0)
+        unlabeled_dataset = train_dataset
+
+        print("train_dataset size : ", len(train_dataset))
+        print("test_dataset size : ", len(test_dataset))
+        
+        NUM_TRAIN = 21531 # N
+        BATCH     = 128 # B
+        SUBSET    = 128 # M
+        #SUBSET    = 10112 # M
+        ADDENDUM  = 1000 # K
+        TRIALS = 15
+
 
     for trial in range(TRIALS):
         # Initialize a labeled dataset by randomly sampling K=ADDENDUM=1,000 data points from the entire dataset.
@@ -182,6 +234,11 @@ if __name__ == '__main__':
             models_1    = resnet.ResNet18(num_classes).cuda()
             models_2    = resnet.ResNet18(num_classes).cuda()
             models_3    = resnet.ResNet18(num_classes).cuda()        
+        elif args.method == "Coreset":
+            print("using coreset netowork")
+            resnet18    = resnet.ResNet18_coreset(num_classes).cuda()
+            models      = resnet18
+
         else:
             resnet18    = resnet.ResNet18(num_classes).cuda()
             models      = resnet18
@@ -210,15 +267,15 @@ if __name__ == '__main__':
                 schedulers_3 = lr_scheduler.MultiStepLR(optimizers_3, milestones=MILESTONES)
                 
                 # Training and test
-                train(models_1, criterion, optimizers_1, schedulers_1, dataloaders, EPOCH, EPOCHL, args.dataset)
-                train(models_2, criterion, optimizers_2, schedulers_2, dataloaders, EPOCH, EPOCHL, args.dataset)
-                train(models_3, criterion, optimizers_3, schedulers_3, dataloaders, EPOCH, EPOCHL, args.dataset)
+                train(models_1, criterion, optimizers_1, schedulers_1, dataloaders, EPOCH, EPOCHL, args.dataset, args.method)
+                train(models_2, criterion, optimizers_2, schedulers_2, dataloaders, EPOCH, EPOCHL, args.dataset, args.method)
+                train(models_3, criterion, optimizers_3, schedulers_3, dataloaders, EPOCH, EPOCHL, args.dataset, args.method)
             
-                acc1 = test(models_1, dataloaders, mode='test')
+                acc1 = test(models_1, dataloaders, mode='test', method=args.method)
                 print('Trial {}/{} || Cycle {}/{} || Label set size {}: Model 1 Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc1))
-                acc2 = test(models_2, dataloaders, mode='test')
+                acc2 = test(models_2, dataloaders, mode='test', method=args.method)
                 print('Trial {}/{} || Cycle {}/{} || Label set size {}: Model 2 Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc2))
-                acc3 = test(models_3, dataloaders, mode='test')
+                acc3 = test(models_3, dataloaders, mode='test', method=args.method)
                 print('Trial {}/{} || Cycle {}/{} || Label set size {}: Model 3 Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc3))
 
                 acc = (acc1 + acc2 + acc3) / 3
@@ -230,8 +287,8 @@ if __name__ == '__main__':
                 schedulers = lr_scheduler.MultiStepLR(optimizers, milestones=MILESTONES)
 
                 # Training and test
-                train(models, criterion, optimizers, schedulers, dataloaders, EPOCH, EPOCHL, args.dataset)
-                acc = test(models, dataloaders, mode='test')
+                train(models, criterion, optimizers, schedulers, dataloaders, EPOCH, EPOCHL, args.dataset, args.method)
+                acc = test(models, dataloaders, mode='test', method=args.method)
                 print('Trial {}/{} || Cycle {}/{} || Label set size {}: Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc))
 
             ##
@@ -240,6 +297,8 @@ if __name__ == '__main__':
             # Randomly sample 10000 unlabeled data points
             random.shuffle(unlabeled_set)
             subset = unlabeled_set[:SUBSET]
+
+            #print(subset)           
 
             # Create unlabeled dataloader for the unlabeled subset
             unlabeled_loader = DataLoader(unlabeled_dataset, batch_size=BATCH, 
@@ -255,9 +314,12 @@ if __name__ == '__main__':
                 print("Coreset")
                 labeled_loader = dataloaders['train']
                 new_indices = Coreset(models, labeled_loader, unlabeled_loader, num_classes, ADDENDUM)
-                labeled_set += new_indices
+                #print("new indices: ", new_indices)
+                select_indices_in_subset = list(torch.tensor(subset)[new_indices].numpy())
+                #print("indices_in_subset:", select_indices_in_subset)
+                labeled_set += select_indices_in_subset
 
-                non_choosen_set = [idx for idx in subset if idx not in new_indices]
+                non_choosen_set = [idx for idx in subset if idx not in select_indices_in_subset]
                 unlabeled_set = non_choosen_set + unlabeled_set[SUBSET:] 
             
             else:
