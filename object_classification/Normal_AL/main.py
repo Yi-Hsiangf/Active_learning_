@@ -1,4 +1,4 @@
-# Python
+#Python
 import os
 import random
 
@@ -24,7 +24,7 @@ import argparse
 from scipy.stats import entropy
 # Custom
 import models.resnet as resnet
-
+import models.lossnet as lossnet
 from config import *
 from acquistion_function import *
 from sampler import SubsetSequentialSampler
@@ -41,7 +41,11 @@ iters = 0
 
 #
 def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, method):
-    models.train()
+    if method == 'LLAL':
+        models['backbone'].train()
+        models['module'].train()
+    else:
+        models.train()
     global iters
 
     #for data in tqdm(dataloaders['train'], leave=False, total=len(dataloaders['train'])):
@@ -50,26 +54,52 @@ def train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, m
         labels = data[1].cuda()
         iters += 1
 
-        optimizers.zero_grad()
 
-        if method == "Coreset":
-            representation, scores = models(inputs)
+        if method == "LLAL":
+            optimizers['backbone'].zero_grad()
+            optimizers['module'].zero_grad()
+            scores, features = models['backbone'](inputs)
+            target_loss = criterion(scores, labels)
+            
+            if epoch > epoch_loss:
+            # After 120 epochs, stop the gradient from the loss prediction module propagated to the target model.
+                features[0] = features[0].detach()
+                features[1] = features[1].detach()
+                features[2] = features[2].detach()
+                features[3] = features[3].detach()
+           
+            pred_loss = models['module'](features)  
+            pred_loss = pred_loss.view(pred_loss.size(0))
+
+            m_backbone_loss = torch.sum(target_loss) / target_loss.size(0)
+            m_module_loss   = LossPredLoss(pred_loss, target_loss, margin=MARGIN)
+            loss            = m_backbone_loss + WEIGHT * m_module_loss
+            loss.backward()        
+            optimizers['backbone'].step()
+            optimizers['module'].step() 
         else:
-            scores = models(inputs)
-        
-        target_loss = criterion(scores, labels)
-       
-
-        loss = torch.sum(target_loss) / target_loss.size(0)
-        loss.backward()
-        optimizers.step()
+            optimizers.zero_grad()
+            if method == "Coreset":
+                representation, scores = models(inputs)
+            else:
+                scores = models(inputs) 
+            
+            target_loss = criterion(scores, labels)
+            loss = torch.sum(target_loss) / target_loss.size(0)
+            loss.backward()
+            optimizers.step()
  
 
 
 #
-def test(models, dataloaders, mode='val', method='Entropy'):
+def test(models, dataloaders, mode, method='Entropy'):
     assert mode == 'val' or mode == 'test'
-    models.eval()
+    
+    if method == "LLAL":
+        models['backbone'].eval()
+        models['module'].eval()
+    else:
+        models.eval()
 
 
     total = 0
@@ -82,6 +112,8 @@ def test(models, dataloaders, mode='val', method='Entropy'):
 
             if method == "Coreset":
                 representation, scores = models(inputs)
+            elif method == "LLAL":
+                scores, _ = models['backbone'](inputs)
             else:
                 scores = models(inputs)
             
@@ -108,8 +140,11 @@ def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, ep
         os.makedirs(checkpoint_dir)
     
     for epoch in range(num_epochs):
-        schedulers.step()
-
+        if method == "LLAL":
+            schedulers['backbone'].step()
+            schedulers['module'].step()
+        else:
+            schedulers.step()
 
         train_epoch(models, criterion, optimizers, dataloaders, epoch, epoch_loss, method)
 
@@ -132,9 +167,10 @@ def train(models, criterion, optimizers, schedulers, dataloaders, num_epochs, ep
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--func', type=str, default='Entropy', help='Select Acquisition Function')
-    parser.add_argument('--dataset', type=str, default='cifar10', help='Select dataset')
-    parser.add_argument('--method', type=str, default='Simple', help='Select method: ENS, DBAL, Simple, Basic, Coreset')
+    parser.add_argument('--func', type=str, default='Entropy', help='Select Acquisition Function: Entropy, BALD, VarR. For LLAL, you dont need to use this func')
+    parser.add_argument('--dataset', type=str, default='cifar10', help='Select dataset: cifar10, cifar100, Caltech101, Caltech256')
+    parser.add_argument('--method', type=str, default='Simple', help='Select method: ENS, DBAL, Simple, Basic, Coreset, LLAL')
+    parser.add_argument('--pretrained', type=str, default='False', help='Select using pretrained model of ImageNet')
 
     args = parser.parse_args()
     return args
@@ -145,10 +181,10 @@ if __name__ == '__main__':
     #plot_data = {'X': [], 'Y': [], 'legend': ['Backbone Loss', 'Module Loss', 'Total Loss']}
 
     args = get_args()
-    print(args.method)
-    print(args.func)
-    print(args.dataset)
-
+    print("method: ", args.method)
+    print("func: ", args.func)
+    print("dataset: ", args.dataset)
+    print("pretrained: ", args.pretrained)
 
     # Initailize dataloader
     train_transform = T.Compose([
@@ -174,9 +210,15 @@ if __name__ == '__main__':
         test_dataset  = CIFAR100('../cifar100', train=False, download=True, transform=test_transform)
         num_classes = 100
     elif args.dataset == 'Caltech101':
-
+        
+        train_transform = T.Compose(
+        [
+        T.Resize((224, 224)),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406],
+                          std=[0.229, 0.224, 0.225])])
         num_classes = 101
-        caltech_dataset = Caltech101 ('../caltech101',  target_type="category" ,download=True, transform=train_transform)
+        caltech_dataset = Caltech101('../caltech101',  target_type="category" ,download=True, transform=train_transform)
         
 
         test_dataset, train_dataset = helper.balanced_random_ratio_split(caltech_dataset, 0.3, 0)
@@ -186,13 +228,12 @@ if __name__ == '__main__':
         print("test_dataset size : ", len(test_dataset))
         
         NUM_TRAIN = 6117 # N
-        BATCH     = 128 # B
         #SUBSET    = 128 # M
         SUBSET    = 6016 # M
         ADDENDUM  = 1000 # K
-        TRIALS = 3
         CYCLES = 6
-
+        BATCH = 32    
+        
     elif args.dataset == 'Caltech256':
 
         num_classes = 256
@@ -213,6 +254,11 @@ if __name__ == '__main__':
         TRIALS = 15
 
 
+    if args.pretrained == 'True':
+        pretrained = True
+    else:   
+        pretrained = False
+
     for trial in range(TRIALS):
         # Initialize a labeled dataset by randomly sampling K=ADDENDUM=1,000 data points from the entire dataset.
         indices = list(range(NUM_TRAIN))
@@ -228,24 +274,24 @@ if __name__ == '__main__':
         
         # Model
         if args.method == "DBAL":
-            resnet18    = resnet.ResNet18_with_dropout(num_classes).cuda()
-            models      = resnet18
+            models    = resnet.ResNet18_with_dropout(num_classes, pretrained, args.method, args.dataset).cuda()
+            
         elif args.method == "ENS":
-            models_1    = resnet.ResNet18(num_classes).cuda()
-            models_2    = resnet.ResNet18(num_classes).cuda()
-            models_3    = resnet.ResNet18(num_classes).cuda()        
+            models_1    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+            models_2    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+            models_3    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()        
         elif args.method == "Coreset":
             print("using coreset netowork")
-            resnet18    = resnet.ResNet18_coreset(num_classes).cuda()
-            models      = resnet18
+            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+        elif args.method == "LLAL":
+            resnet18    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+            loss_module = lossnet.LossNet(args.dataset).cuda()
+            models      = {'backbone': resnet18, 'module': loss_module}
 
         else:
-            resnet18    = resnet.ResNet18(num_classes).cuda()
-            models      = resnet18
-
+            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
 
         torch.backends.cudnn.benchmark = False
-
         # Active learning cycles
         for cycle in range(CYCLES):
             start = time.time()
@@ -280,6 +326,22 @@ if __name__ == '__main__':
 
                 acc = (acc1 + acc2 + acc3) / 3
                 print('Trial {}/{} || Cycle {}/{} || Label set size {}: Model avg Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc))
+            
+            elif args.method == "LLAL":
+                optim_backbone = optim.SGD(models['backbone'].parameters(), lr=LR, 
+                                    momentum=MOMENTUM, weight_decay=WDECAY)
+                optim_module   = optim.SGD(models['module'].parameters(), lr=LR, 
+                                    momentum=MOMENTUM, weight_decay=WDECAY)
+                sched_backbone = lr_scheduler.MultiStepLR(optim_backbone, milestones=MILESTONES)
+                sched_module   = lr_scheduler.MultiStepLR(optim_module, milestones=MILESTONES)
+
+                optimizers = {'backbone': optim_backbone, 'module': optim_module}
+                schedulers = {'backbone': sched_backbone, 'module': sched_module} 
+
+                train(models, criterion, optimizers, schedulers, dataloaders, EPOCH, EPOCHL, args.dataset, args.method)
+                acc = test(models, dataloaders, mode='test', method=args.method)
+                print('Trial {}/{} || Cycle {}/{} || Label set size {}: Test acc {}'.format(trial+1, TRIALS, cycle+1, CYCLES, len(labeled_set), acc))
+
             else:
                 optimizers = optim.SGD(models.parameters(), lr=LR,
                                      momentum=MOMENTUM, weight_decay=WDECAY)
@@ -295,12 +357,16 @@ if __name__ == '__main__':
             #  Update the labeled dataset via loss prediction-based uncertainty measurement
 
             # Randomly sample 10000 unlabeled data points
+            
+            if args.dataset == 'Caltech101':
+                SUBSET -= 992
+                print("subset: ",SUBSET)    
+                
             random.shuffle(unlabeled_set)
             subset = unlabeled_set[:SUBSET]
 
-            #print(subset)           
 
-            # Create unlabeled dataloader for the unlabeled subset
+            #Create unlabeled dataloader for the unlabeled subset
             unlabeled_loader = DataLoader(unlabeled_dataset, batch_size=BATCH, 
                                           sampler=SubsetSequentialSampler(subset), # more convenient if we maintain the order of subset
                                           pin_memory=True)
@@ -332,6 +398,8 @@ if __name__ == '__main__':
                     uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
                 elif args.method == "ENS":
                     uncertainty = ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, args.func, num_classes)
+                elif args.method == "LLAL":
+                    uncertainty = LLAL_uncertainty(models, unlabeled_loader)
 
 
                 # Index in ascending order
@@ -367,7 +435,13 @@ if __name__ == '__main__':
                     'state_dict_backbone': models_3.state_dict(),
                 },
                 './' + args.dataset + '/train/weights/active_resnet18_' + args.dataset + '_' + args.func + '_' + args.method + 'model3_trial{}.pth'.format(trial))
-
+        elif args.method == 'LLAL':
+            torch.save({
+                    'trial': trial + 1,
+                    'state_dict_backbone': models['backbone'].state_dict(),
+                    'state_dict_module': models['module'].state_dict()
+                },
+                './' + args.dataset + '/train/weights/active_resnet18_' + args.dataset + '_' + args.func + '_' + args.method + '_trial{}.pth'.format(trial))
         else:
             torch.save({
                     'trial': trial + 1,
