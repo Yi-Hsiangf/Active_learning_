@@ -232,7 +232,7 @@ if __name__ == '__main__':
         SUBSET    = 6016 # M
         ADDENDUM  = 1000 # K
         CYCLES = 6
-        BATCH = 32    
+        BATCH = 128    
         
     elif args.dataset == 'Caltech256':
 
@@ -259,6 +259,8 @@ if __name__ == '__main__':
     else:   
         pretrained = False
 
+
+    print("Batch size: ", BATCH)
     for trial in range(TRIALS):
         # Initialize a labeled dataset by randomly sampling K=ADDENDUM=1,000 data points from the entire dataset.
         indices = list(range(NUM_TRAIN))
@@ -274,7 +276,7 @@ if __name__ == '__main__':
         
         # Model
         if args.method == "DBAL":
-            models    = resnet.ResNet18_with_dropout(num_classes, pretrained, args.method, args.dataset).cuda()
+            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
             
         elif args.method == "ENS":
             models_1    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
@@ -357,65 +359,72 @@ if __name__ == '__main__':
             #  Update the labeled dataset via loss prediction-based uncertainty measurement
 
             # Randomly sample 10000 unlabeled data points
-            
-            if args.dataset == 'Caltech101':
-                SUBSET -= 992
-                print("subset: ",SUBSET)    
-                
-            random.shuffle(unlabeled_set)
-            subset = unlabeled_set[:SUBSET]
+                       
+            if cycle != (CYCLES-1): 
+                if args.dataset == 'Caltech101':
+                    if cycle == 4:
+                        subset_num = 1024
+                    else:
+                        subset_num = SUBSET - 1024 * (cycle + 1)
+                    print("subset: ",subset_num)   
+                     
+                else:
+                    subset_num = SUBSET
 
+                random.shuffle(unlabeled_set)
+                subset = unlabeled_set[:subset_num]
+                print("unlabel set size:", len(unlabeled_set))
 
-            #Create unlabeled dataloader for the unlabeled subset
-            unlabeled_loader = DataLoader(unlabeled_dataset, batch_size=BATCH, 
+                #Create unlabeled dataloader for the unlabeled subset
+                unlabeled_loader = DataLoader(unlabeled_dataset, batch_size=BATCH, 
                                           sampler=SubsetSequentialSampler(subset), # more convenient if we maintain the order of subset
                                           pin_memory=True)
             
             
-            if args.func == "Random" and args.method == "Simple":
-                labeled_set += list(torch.tensor(subset)[-ADDENDUM:].numpy())
-                unlabeled_set = list(torch.tensor(subset)[:-ADDENDUM].numpy()) + unlabeled_set[SUBSET:]
+                if args.func == "Random" and args.method == "Simple":
+                    labeled_set += list(torch.tensor(subset)[-ADDENDUM:].numpy())
+                    unlabeled_set = list(torch.tensor(subset)[:-ADDENDUM].numpy()) + unlabeled_set[subset_num:]
            
-            elif args.method == "Coreset":
-                print("Coreset")
-                labeled_loader = dataloaders['train']
-                new_indices = Coreset(models, labeled_loader, unlabeled_loader, num_classes, ADDENDUM)
-                #print("new indices: ", new_indices)
-                select_indices_in_subset = list(torch.tensor(subset)[new_indices].numpy())
-                #print("indices_in_subset:", select_indices_in_subset)
-                labeled_set += select_indices_in_subset
+                elif args.method == "Coreset":
+                    print("Coreset")
+                    labeled_loader = dataloaders['train']
+                    new_indices = Coreset(models, labeled_loader, unlabeled_loader, num_classes, ADDENDUM)
+                    #print("new indices: ", new_indices)
+                    select_indices_in_subset = list(torch.tensor(subset)[new_indices].numpy())
+                    #print("indices_in_subset:", select_indices_in_subset)
+                    labeled_set += select_indices_in_subset
 
-                non_choosen_set = [idx for idx in subset if idx not in select_indices_in_subset]
-                unlabeled_set = non_choosen_set + unlabeled_set[SUBSET:] 
+                    non_choosen_set = [idx for idx in subset if idx not in select_indices_in_subset]
+                    unlabeled_set = non_choosen_set + unlabeled_set[subset_num:] 
             
-            else:
-                # Measure uncertainty of each data points in the subset
-                if args.method == "Simple":
-                    uncertainty = Simple_uncertainty(models, unlabeled_loader, num_classes)
-                elif args.method == "Basic":
-                    uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
-                elif args.method == "DBAL":
-                    uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
-                elif args.method == "ENS":
-                    uncertainty = ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, args.func, num_classes)
-                elif args.method == "LLAL":
-                    uncertainty = LLAL_uncertainty(models, unlabeled_loader)
+                else:
+                    # Measure uncertainty of each data points in the subset
+                    if args.method == "Simple":
+                        uncertainty = Simple_uncertainty(models, unlabeled_loader, num_classes)
+                    elif args.method == "Basic":
+                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
+                    elif args.method == "DBAL":
+                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
+                    elif args.method == "ENS":
+                        uncertainty = ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, args.func, num_classes)
+                    elif args.method == "LLAL":
+                        uncertainty = LLAL_uncertainty(models, unlabeled_loader)
 
 
-                # Index in ascending order
-                arg = torch.argsort(uncertainty)
-                # Update the labeled dataset and the unlabeled dataset, respectively
-                labeled_set += list(torch.tensor(subset)[arg][-ADDENDUM:].numpy())
-                unlabeled_set = list(torch.tensor(subset)[arg][:-ADDENDUM].numpy()) + unlabeled_set[SUBSET:]
+                    # Index in ascending order
+                    arg = torch.argsort(uncertainty)
+                    # Update the labeled dataset and the unlabeled dataset, respectively
+                    labeled_set += list(torch.tensor(subset)[arg][-ADDENDUM:].numpy())
+                    unlabeled_set = list(torch.tensor(subset)[arg][:-ADDENDUM].numpy()) + unlabeled_set[subset_num:]
                             
 
-            # Create a new dataloader for the updated labeled dataset
-            dataloaders['train'] = DataLoader(train_dataset, batch_size=BATCH, 
-                                              sampler=SubsetRandomSampler(labeled_set), 
-                                              pin_memory=True)
+                # Create a new dataloader for the updated labeled dataset
+                dataloaders['train'] = DataLoader(train_dataset, batch_size=BATCH, 
+                                                  sampler=SubsetRandomSampler(labeled_set), 
+                                                  pin_memory=True)
                                               
-            end = time.time()
-            print("execute time：%f s" % (end - start))
+                end = time.time()
+                print("execute time：%f s" % (end - start))
         
         # Save a checkpoint
         

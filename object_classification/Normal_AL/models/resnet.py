@@ -76,6 +76,42 @@ class ResNet(nn.Module):
         ## pretrained network
         self.resnet =  models.resnet18(pretrained=True)
         self.resnet.fc = nn.Linear(512, num_classes)
+        
+        if method == "DBAL":
+            self.resnet.layer1[0].relu = nn.Sequential(
+                self.resnet.layer1[0].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer1[1].relu = nn.Sequential(
+                self.resnet.layer1[1].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer2[0].relu = nn.Sequential(
+                self.resnet.layer2[0].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer2[1].relu = nn.Sequential(
+                self.resnet.layer2[1].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer3[0].relu = nn.Sequential(
+                self.resnet.layer3[0].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer3[1].relu = nn.Sequential(
+                self.resnet.layer3[1].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer4[0].relu = nn.Sequential(
+                self.resnet.layer4[0].relu,
+                nn.Dropout(p=0.3)
+            )
+            self.resnet.layer4[1].relu = nn.Sequential(
+                self.resnet.layer4[1].relu,
+                nn.Dropout(p=0.3)
+            )
+
+        print(self.resnet)
         self.intermediate = {}
 
     def _make_layer(self, block, planes, num_blocks, stride):
@@ -119,40 +155,36 @@ class ResNet(nn.Module):
             ## using pretrained network
             
             # setup the hook for the intermediate layer
-            out1_hook = self.resnet.layer1.register_forward_hook(self.get_intermediate('layer1'))
-            out2_hook = self.resnet.layer2.register_forward_hook(self.get_intermediate('layer2'))
-            out3_hook = self.resnet.layer3.register_forward_hook(self.get_intermediate('layer3'))
-            out4_hook = self.resnet.layer4.register_forward_hook(self.get_intermediate('layer4'))
-            representation_hook = self.resnet.avgpool.register_forward_hook(self.get_intermediate('avgpool'))
 
             #print(self.resnet)
-
-            out = self.resnet(x) 
-   
             
             if self.method == "Coreset":
+                representation_hook = self.resnet.avgpool.register_forward_hook(self.get_intermediate('avgpool'))
+                out = self.resnet(x)
                 representation = self.intermediate['avgpool']
-                print("representation: ", representation)
+                #print("representation: ", representation)
+                representation_hook.remove()
                 return representation, out
             elif self.method == "LLAL":
+                out1_hook = self.resnet.layer1.register_forward_hook(self.get_intermediate('layer1'))
+                out2_hook = self.resnet.layer2.register_forward_hook(self.get_intermediate('layer2'))
+                out3_hook = self.resnet.layer3.register_forward_hook(self.get_intermediate('layer3'))
+                out4_hook = self.resnet.layer4.register_forward_hook(self.get_intermediate('layer4'))
+                out = self.resnet(x)
                 out1 = self.intermediate['layer1']
                 out2 = self.intermediate['layer2']
                 out3 = self.intermediate['layer3']
                 out4 = self.intermediate['layer4']
-                #print("out1 size: ", out1.shape)
-                #print("out2 size: ", out2.shape)
-                #print("out3 size: ", out3.shape)
-                #print("out4 size: ", out4.shape)
-
+                
+                out1_hook.remove()
+                out2_hook.remove()
+                out3_hook.remove()
+                out4_hook.remove()
                 return out, [out1, out2, out3, out4]
             else:
+                out = self.resnet(x)
                 return out
             
-            out1_hook.remove()
-            out2_hook.remove()
-            out3_hook.remove()
-            out4_hook.remove()
-            representation_hook.remove()
 
 def ResNet18(num_classes, pretrained, method, dataset):
     print("num_classes:", num_classes)
@@ -161,9 +193,6 @@ def ResNet18(num_classes, pretrained, method, dataset):
     resnet18 = ResNet(BasicBlock, [2,2,2,2], num_classes, pretrained, method, dataset)
     return resnet18
 
-
-def ResNet18_with_dropout(num_classes):
-    return ResNet(BasicBlock_with_dropout, [2,2,2,2], num_classes, method, dataset)
 
 
 
