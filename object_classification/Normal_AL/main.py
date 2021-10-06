@@ -171,6 +171,8 @@ def get_args():
     parser.add_argument('--dataset', type=str, default='cifar10', help='Select dataset: cifar10, cifar100, Caltech101, Caltech256')
     parser.add_argument('--method', type=str, default='Simple', help='Select method: ENS, DBAL, Simple, Basic, Coreset, LLAL')
     parser.add_argument('--pretrained', type=str, default='False', help='Select using pretrained model of ImageNet')
+    parser.add_argument('--network', type=str, default='resnet18', help='Select the network architecture: resnet18, resnet34')
+
 
     args = parser.parse_args()
     return args
@@ -185,7 +187,7 @@ if __name__ == '__main__':
     print("func: ", args.func)
     print("dataset: ", args.dataset)
     print("pretrained: ", args.pretrained)
-
+    print("network: ", args.network)
     # Initailize dataloader
     train_transform = T.Compose([
         T.RandomHorizontalFlip(),
@@ -275,23 +277,17 @@ if __name__ == '__main__':
         dataloaders  = {'train': train_loader, 'test': test_loader}
         
         # Model
-        if args.method == "DBAL":
-            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
-            
-        elif args.method == "ENS":
-            models_1    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
-            models_2    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
-            models_3    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()        
-        elif args.method == "Coreset":
-            print("using coreset netowork")
-            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+        if args.method == "ENS":
+            models_1    = resnet.ResNet(num_classes, args.network, pretrained, args.method, args.dataset).cuda()
+            models_2    = resnet.ResNet(num_classes, args.network, pretrained, args.method, args.dataset).cuda()
+            models_3    = resnet.ResNet(num_classes, args.network, pretrained, args.method, args.dataset).cuda()        
         elif args.method == "LLAL":
-            resnet18    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
-            loss_module = lossnet.LossNet(args.dataset).cuda()
-            models      = {'backbone': resnet18, 'module': loss_module}
+            resnet    = resnet.ResNet(num_classes, args.network, pretrained, args.method, args.dataset).cuda()
+            loss_module = lossnet.LossNet(args.network, args.dataset).cuda()
+            models      = {'backbone': resnet, 'module': loss_module}
 
         else:
-            models    = resnet.ResNet18(num_classes, pretrained, args.method, args.dataset).cuda()
+            models    = resnet.ResNet(num_classes, args.network, pretrained, args.method, args.dataset).cuda()
 
         torch.backends.cudnn.benchmark = False
         # Active learning cycles
@@ -402,11 +398,11 @@ if __name__ == '__main__':
                     if args.method == "Simple":
                         uncertainty = Simple_uncertainty(models, unlabeled_loader, num_classes)
                     elif args.method == "Basic":
-                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
+                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes, subset_num)
                     elif args.method == "DBAL":
-                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes)
+                        uncertainty = DBAL_uncertainty(models, unlabeled_loader, dropout_iter, args.func, num_classes, subset_num)
                     elif args.method == "ENS":
-                        uncertainty = ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, args.func, num_classes)
+                        uncertainty = ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, args.func, num_classes, subset_num)
                     elif args.method == "LLAL":
                         uncertainty = LLAL_uncertainty(models, unlabeled_loader)
 

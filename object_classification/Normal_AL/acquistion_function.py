@@ -33,7 +33,7 @@ def Simple_uncertainty(models, unlabeled_loader, num_classes):
 
 
 ## DBAL,  Basic
-def DBAL_uncertainty(models, unlabeled_loader, dropout_iter, Acquisition_function, num_classes):
+def DBAL_uncertainty(models, unlabeled_loader, dropout_iter, Acquisition_function, num_classes, subset_num):
     models.eval()
     predictions = torch.tensor([]).cuda()
     full_predictions = torch.tensor([]).cuda()
@@ -73,14 +73,16 @@ def DBAL_uncertainty(models, unlabeled_loader, dropout_iter, Acquisition_functio
         elif(Acquisition_function == "VarR"):
             class_predictions = class_predictions.cpu().numpy()
             Predicted_Class, Mode = mode(class_predictions)
-            temp = np.ones(SUBSET) #1 10000  
+            temp = np.ones(subset_num) #1 10000  
             temp = temp - Mode / float(dropout_iter)
             num_uncertainty = torch.from_numpy(temp.T)
             uncertainty = torch.squeeze(num_uncertainty)
     
     return uncertainty
 
-def ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, Acquisition_function, num_classes):
+## ENS
+
+def ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, Acquisition_function, num_classes, subset_num):
     models_1.eval()
     models_2.eval()
     models_3.eval()
@@ -123,35 +125,38 @@ def ENS_uncertainty(models_1, models_2, models_3, unlabeled_loader, Acquisition_
         elif(Acquisition_function == "VarR"):
             class_predictions = class_predictions.cpu().numpy()
             Predicted_Class, Mode = mode(class_predictions)
-            temp = np.ones(SUBSET) #1 10000  
+            temp = np.ones(subset_num) #1 10000  
             temp = temp - Mode / float(dropout_iter)
             num_uncertainty = torch.from_numpy(temp.T)
             uncertainty = torch.squeeze(num_uncertainty)
     return uncertainty
 
 
+
+## Coreset
 from scipy.spatial import distance_matrix
 
 def Coreset(models, labeled_loader, unlabeled_loader, num_classes, amount):
     models.eval()
-    unlabeled_predictions = torch.tensor([]).cuda()
-    labeled_predictions = torch.tensor([]).cuda()
+    unlabeled_representation = torch.tensor([]).cuda()
+    labeled_representation = torch.tensor([]).cuda()
     with torch.no_grad():
         for (inputs, labels) in unlabeled_loader:
             inputs = inputs.cuda()
             batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
-            representation, batch_predictions = models(inputs) # 128 10
-            unlabeled_predictions = torch.cat((unlabeled_predictions, representation + 1e-10), 0) # 10000 10
-            #unlabeled_predictions = torch.cat((unlabeled_predictions, batch_predictions + 1e-10), 0) # 10000 10
+            representation, batch_predictions = models(inputs) # 128 512
+            unlabeled_representation = torch.cat((unlabeled_representation, representation + 1e-10), 0) # 10000 512
 
         for (inputs, labels) in labeled_loader:
             inputs = inputs.cuda()
             batch_predictions = torch.zeros((BATCH, num_classes)).cuda()
-            representation, batch_predictions = models(inputs) # 128 10
-            labeled_predictions = torch.cat((labeled_predictions, representation + 1e-10), 0) # 10000 10
-            #labeled_predictions = torch.cat((labeled_predictions, batch_predictions + 1e-10), 0) 
+            representation, batch_predictions = models(inputs) # 128 512
+            labeled_representation = torch.cat((labeled_representation, representation + 1e-10), 0) # 10000 512
         
-        new_indices = greedy_k_center(labeled_predictions, unlabeled_predictions, amount) 
+
+        #print("labeled_representation: ", labeled_representation.shape)
+        #print("unlabeled_representation: ", unlabeled_representation.shape)
+        new_indices = greedy_k_center(labeled_representation, unlabeled_representation, amount) 
         # return a list
     return new_indices
 
@@ -160,8 +165,11 @@ def greedy_k_center(labeled, unlabeled, amount):
         greedy_indices = []
 
         # get the minimum distances between the labeled and unlabeled examples (iteratively, to avoid memory issues):
-        labeled = labeled.cpu().data.numpy()
-        unlabeled = unlabeled.cpu().data.numpy()
+        labeled = labeled.cpu()
+        unlabeled = unlabeled.cpu()
+        print("labeled: ", labeled.shape)
+        print("labeled[0, :].reshape((1, labeled.shape[1])): ", labeled[0, :].reshape((1, labeled.shape[1])).shape)
+        print("unlabeled: ", unlabeled.shape)
         min_dist = np.min(distance_matrix(labeled[0, :].reshape((1, labeled.shape[1])), unlabeled), axis=0)
         min_dist = min_dist.reshape((1, min_dist.shape[0]))
         for j in range(1, labeled.shape[0], 100):
@@ -184,4 +192,46 @@ def greedy_k_center(labeled, unlabeled, amount):
             farthest = np.argmax(min_dist)
             greedy_indices.append(farthest)
 
-        return greedy_indices 
+        return greedy_indices
+
+
+
+## LLAL
+def LossPredLoss(input, target, margin=1.0, reduction='mean'):
+     assert len(input) % 2 == 0, 'the batch size is not even.'
+     assert input.shape == input.flip(0).shape
+
+     input = (input - input.flip(0))[:len(input)//2] # [l_1 - l_2B, l_2 - l_2B-1, ... , l_B - l_B+1], where batch_size = 2B
+     target = (target - target.flip(0))[:len(target)//2]
+     target = target.detach()
+
+     one = 2 * torch.sign(torch.clamp(target, min=0)) - 1 # 1 operation which is defined by the authors
+
+     if reduction == 'mean':
+         loss = torch.sum(torch.clamp(margin - one * input, min=0))
+         loss = loss / input.size(0) # Note that the size of input is already halved
+     elif reduction == 'none':
+         loss = torch.clamp(margin - one * input, min=0)
+     else:
+         NotImplementedError()
+
+     return loss
+
+def LLAL_uncertainty(models, unlabeled_loader):
+    models['backbone'].eval()
+    models['module'].eval()
+    uncertainty = torch.tensor([]).cuda()
+
+    with torch.no_grad():
+        for (inputs, labels) in unlabeled_loader:
+            inputs = inputs.cuda()
+            # labels = labels.cuda()
+            scores, features = models['backbone'](inputs)
+            #print("scores:", scores)
+            pred_loss = models['module'](features) # pred_loss = criterion(scores, labels) # ground truth loss
+            pred_loss = pred_loss.view(pred_loss.size(0))
+
+            uncertainty = torch.cat((uncertainty, pred_loss), 0)
+
+    return uncertainty.cpu()
+ 

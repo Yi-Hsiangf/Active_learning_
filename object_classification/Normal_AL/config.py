@@ -1,28 +1,26 @@
-
-
-
-##
-# Learning Loss for Active Learning
+#Learning Loss for Active Learning
 NUM_TRAIN = 50000 # N
 NUM_VAL   = 50000 - NUM_TRAIN
-BATCH     = 128 # B
+BATCH     = 128  # B
 SUBSET    = 10112 # M
 #SUBSET    = 128 ## M
+#ADDENDUM  = 100 # K
+
 ADDENDUM  = 1000 # K
 
 MARGIN = 1.0 # xi
 WEIGHT = 1.0 # lambda
 
-TRIALS = 3
-CYCLES = 10
+TRIALS = 1
+CYCLES = 2
 
 #EPOCH = 1
 EPOCH = 200
-LR = 0.1
+LR = 0.01
 MILESTONES = [160]
 EPOCHL = 120 # After 120 epochs, stop the gradient from the loss prediction module propagated to the target model
 
 MOMENTUM = 0.9
 WDECAY = 5e-4
 
-dropout_iter = 100
+dropout_iter = 2
