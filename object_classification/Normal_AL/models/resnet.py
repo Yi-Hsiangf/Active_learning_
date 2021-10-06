@@ -54,9 +54,9 @@ class BasicBlock_with_dropout(nn.Module):
         out = F.relu(out)
         return out
 
-class ResNet(nn.Module):
+class ResNet18(nn.Module):
     def __init__(self, block, num_blocks, num_classes, pretrained, method, dataset):
-        super(ResNet, self).__init__()
+        super(ResNet18, self).__init__()
 
         self.method = method
         self.dataset = dataset
@@ -140,10 +140,6 @@ class ResNet(nn.Module):
             representation = out.view(out.size(0), -1)
             out = self.linear(representation)
             
-            #print("out1 size: ", out1.shape)
-            #print("out2 size: ", out2.shape)
-            #print("out3 size: ", out3.shape)
-            #print("out4 size: ", out4.shape)
 
             if self.method == "Coreset":
                 return representation, out    
@@ -161,7 +157,8 @@ class ResNet(nn.Module):
             if self.method == "Coreset":
                 representation_hook = self.resnet.avgpool.register_forward_hook(self.get_intermediate('avgpool'))
                 out = self.resnet(x)
-                representation = self.intermediate['avgpool']
+                representation_tmp = self.intermediate['avgpool']
+                representation = representation_tmp.view(representation_tmp.size(0), -1)
                 #print("representation: ", representation)
                 representation_hook.remove()
                 return representation, out
@@ -185,25 +182,70 @@ class ResNet(nn.Module):
                 out = self.resnet(x)
                 return out
             
+class ResNet34(nn.Module):
+    def __init__(self, num_classes, pretrained, method, dataset):
+        super(ResNet34, self).__init__()
+        self.method = method
+        self.dataset = dataset
+        self.pretrained = pretrained
 
-def ResNet18(num_classes, pretrained, method, dataset):
+
+        ## pretrained network
+        self.resnet =  models.resnet34(pretrained=self.pretrained)
+        self.resnet.fc = nn.Linear(512, num_classes)
+
+        print(self.resnet)
+        self.intermediate = {}
+
+ 
+
+    def get_intermediate(self, name):
+        def hook(model, input, output):
+            self.intermediate[name] = output.detach()
+        return hook
+
+    def forward(self, x):
+
+        if self.method == "Coreset":
+            representation_hook = self.resnet.avgpool.register_forward_hook(self.get_intermediate('avgpool'))
+            out = self.resnet(x)
+            representation_tmp = self.intermediate['avgpool']
+            representation = representation_tmp.view(representation_tmp.size(0), -1)
+            #print("representation: ", representation)
+            representation_hook.remove()
+            return representation, out
+        elif self.method == "LLAL":
+            out1_hook = self.resnet.layer1.register_forward_hook(self.get_intermediate('layer1'))
+            out2_hook = self.resnet.layer2.register_forward_hook(self.get_intermediate('layer2'))
+            out3_hook = self.resnet.layer3.register_forward_hook(self.get_intermediate('layer3'))
+            out4_hook = self.resnet.layer4.register_forward_hook(self.get_intermediate('layer4'))
+            out = self.resnet(x)
+            out1 = self.intermediate['layer1']
+            out2 = self.intermediate['layer2']
+            out3 = self.intermediate['layer3']
+            out4 = self.intermediate['layer4']
+
+            #print(out1.shape, out2.shape, out3.shape, out4.shape)
+
+            out1_hook.remove()
+            out2_hook.remove()
+            out3_hook.remove()
+            out4_hook.remove()
+            return out, [out1, out2, out3, out4]
+        else:
+            out = self.resnet(x)
+            return out
+
+def ResNet(num_classes, network, pretrained, method, dataset):
     print("num_classes:", num_classes)
     print("Pretrained: ", pretrained)
     print("method: ", method)
-    resnet18 = ResNet(BasicBlock, [2,2,2,2], num_classes, pretrained, method, dataset)
-    return resnet18
+    
+    if network == "resnet18":
+        resnet = ResNet18(BasicBlock, [2,2,2,2], num_classes, pretrained, method, dataset)
+    elif network == "resnet34":
+        resnet = ResNet34(num_classes, pretrained, method, dataset)
+    
+    return resnet
 
 
-
-
-def ResNet34():
-    return ResNet(BasicBlock, [3,4,6,3])
-
-def ResNet50():
-    return ResNet(Bottleneck, [3,4,6,3])
-
-def ResNet101():
-    return ResNet(Bottleneck, [3,4,23,3])
-
-def ResNet152():
-    return ResNet(Bottleneck, [3,8,36,3])

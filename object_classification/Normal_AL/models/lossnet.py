@@ -9,17 +9,26 @@ import torch.nn.functional as F
 
 
 class LossNet(nn.Module):
-    def __init__(self, dataset):
+    def __init__(self, network, dataset):
         super(LossNet, self).__init__()
-       
-        if dataset == 'Caltech101':
-            feature_sizes=[56, 28, 14, 7]  
-            num_channels=[64, 128, 256, 512]
-            interm_dim=128 
-        else:
-            feature_sizes=[32, 16, 8, 4]
-            num_channels=[64, 128, 256, 512]
-            interm_dim=128
+        
+        interm_dim = 128
+        if network == 'resnet18':
+            if dataset == 'Caltech101':
+                feature_sizes=[56, 28, 14, 7]  
+                num_channels=[64, 128, 256, 512]
+            else:
+                feature_sizes=[32, 16, 8, 4]
+                num_channels=[64, 128, 256, 512]
+        elif network == 'resnet34':
+            if dataset == 'Caltech101':
+                feature_sizes=[56, 28, 14, 7]
+                num_channels=[64, 128, 256, 512]
+            else:
+                feature_sizes=[8, 4, 2, 1]
+                num_channels=[64, 128, 256, 512]
+
+
         self.GAP1 = nn.AvgPool2d(feature_sizes[0])
         self.GAP2 = nn.AvgPool2d(feature_sizes[1])
         self.GAP3 = nn.AvgPool2d(feature_sizes[2])
