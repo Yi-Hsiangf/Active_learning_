@@ -493,38 +493,6 @@ if __name__ == '__main__':
 
 
     import time
-    start = time.time()
-    for cycle in range(10):
-        weight_path = 'weights/Random/lr_0.0001_cycle_'+str(cycle+1)+'k.pth'
-        net = build_ssd('test', 300, num_classes)  # initialize SSD
-        net.load_weights(weight_path)
-        net.eval()
-        print("Finished loading cycyle " + str(cycle) + " Random model!")
-        # load data
-        dataset = VOCDetection(
-            args.voc_root, [('2007', set_type)], BaseTransform(300, dataset_mean),
-            VOCAnnotationTransform()
-        )
-        if args.cuda:
-            net = net.cuda()
-            cudnn.benchmark = True
-        # evaluation
-        mAP = test_net(
-            args.save_folder,
-            net,
-            args.cuda,
-            dataset,
-            BaseTransform(net.size, dataset_mean),
-            args.top_k,
-            300,
-            thresh=args.confidence_threshold
-        )
-        print(cycle, mAP)
-        rand_maps.append(mAP)
-    
-    end = time.time()
-    print("random total time: ", end - start)
-
 
     start = time.time()
 
@@ -560,47 +528,12 @@ if __name__ == '__main__':
     print("llal total time: ", end - start)
     
 
-    start = time.time()    
-    for cycle in range(10):
-        weight_path = 'weights/Entropy/lr_0.0001_cycle_'+str(cycle+1)+'k.pth'
-        net = build_ssd('test', 300, num_classes)  # initialize SSD
-        net.load_weights(weight_path)
-        net.eval()
-        print("Finished loading cycle " + str(cycle) + " Entropy model!")
-        # load data
-        dataset = VOCDetection(
-            args.voc_root, [('2007', set_type)], BaseTransform(300, dataset_mean),
-            VOCAnnotationTransform()
-        )
-        if args.cuda:
-            net = net.cuda()
-            cudnn.benchmark = True
-        # evaluation
-        mAP = test_net(
-            args.save_folder,
-            net,
-            args.cuda,
-            dataset,
-            BaseTransform(net.size, dataset_mean),
-            args.top_k,
-            300,
-            thresh=args.confidence_threshold
-        )
-        print(cycle, mAP)
-        en_maps.append(mAP) 
-
-    end = time.time()
-    print("entropy total time: ", end - start)
 
     plt.figure(figsize=(10, 10))
-    plt.plot(np.arange(1, 11), rand_maps, 'b-')
     plt.plot(np.arange(1, 11), lp_maps, 'r-')
-    plt.plot(np.arange(1, 11), en_maps, 'g-')
 
     plt.xlabel("Number of images used in training in 1000s")
     plt.ylabel("Test Accuracy")
-    plt.title("Loss prediction vs. random sample")
-    plt.savefig("lp_rand_en.png")
-    print(rand_maps)
+    plt.title("LLAL")
+    plt.savefig("llal.png")
     print(lp_maps)
-    print(en_maps)

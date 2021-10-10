@@ -199,7 +199,7 @@ def train():
 
     #random image choice
     train_idx = []
-    progress = tqdm.tqdm(range(10))
+    progress = tqdm.tqdm(range(1))
     for cycle in progress:
         net = build_ssd('train', cfg['min_dim'], cfg['num_classes'])
 
@@ -337,7 +337,7 @@ def train():
                         
                         
         if args.Acq_func == "LLAL":
-            folder = join(args.save_folder, 'Active_learning')
+            folder = join(args.save_folder, 'LLAL')
         elif args.Acq_func == "Random":
             folder = join(args.save_folder, 'Random')
         elif args.Acq_func == "Entropy":
